@@ -21,7 +21,7 @@ const Resize = require('../Resize');
 
 // bazaar image upload and user model bz_photo field update
 router.post('/images/bazaar/:id', upload.single('bz_photo'), async function(req, res) {
-    const imagePath = path.join(__dirname, '../../front1/src/assets');
+    const imagePath = path.join(__dirname, '/assets');
     const fileUpload = new Resize(imagePath);
     if (!req.file) {
         res.json({
