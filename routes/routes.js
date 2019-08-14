@@ -22,6 +22,7 @@ const Resize = require('../Resize');
 // bazaar image upload and user model bz_photo field update
 router.post('/images/bazaar/:id', upload.single('bz_photo'), async function(req, res) {
     const imagePath = path.join(__dirname, '../../html/assets');
+    // const imagePath = path.join(__dirname, '../../front1/src/assets');
     const fileUpload = new Resize(imagePath);
     if (!req.file) {
         res.json({
@@ -45,7 +46,8 @@ router.post('/images/bazaar/:id', upload.single('bz_photo'), async function(req,
 
 // bazaar product image upload and return image file name
 router.post('/images/bazaarProd', upload.single('bzp_photo'), async function(req, res) {
-    const imagePath = path.join(__dirname, '../../front1/src/assets');
+    const imagePath = path.join(__dirname, '../../html/assets');
+    // const imagePath = path.join(__dirname, '../../front1/src/assets');
     const fileUpload = new Resize(imagePath);
     if (!req.file) {
         res.status(401).json({ error: 'Please provide an image' });
@@ -526,8 +528,35 @@ router.post('/updateOrderToClaim', jwtService.checkUser(), (req, res) => {
 
 // increase lc balance of user
 router.post('/increaseLcBalance', jwtService.checkUser(), (req, res) => {
-    balanceController.increaseLcAmount(req.body.userid, req.body.amount);
-    console.log(res);
+    const userid = parseInt(req.body.userid);
+    const amount = parseFloat(req.body.amount);
+    let reason = '';
+    BalanceModel.findOne({ userid }).then(record => {
+        if (record) {
+            const old_balance = record.lc;
+            const new_balance = old_balance + amount;
+            record.lc = new_balance;
+            if (amount > 0)
+                reason = "Your lc amount has increased by " + amount + ".";
+            else if (amount < 0)
+                reason = "Your lc amount has decreased by " + (-amount) + ".";
+            else
+                reason = '';
+            console.log(reason);
+            record.save().then(() => {
+                socketservice.send(userid, "lc_balance", { amount: record.lc, reason });
+                res.json({
+                    status: 'success',
+                    payload: 'increase amount success'
+                })
+            });
+        } else {
+            res.json({
+                status: 'error',
+                payload: 'increase amount error'
+            });
+        }
+    });
 });
 
 // get claimed orders for buyer at claim order page

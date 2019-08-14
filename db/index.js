@@ -12,7 +12,7 @@ const CartModel = require('./models/cart');
  * Edit config in file config/database.json
  */
 function connect() {
-    // return mongoose.connect(`${DB_CONFIG.host}:${DB_CONFIG.port}/${DB_CONFIG.database}`);
+    // return mongoose.connect(`mongodb://${DB_CONFIG.host}:${DB_CONFIG.port}/${DB_CONFIG.database}`);
     const connector = mongoose.connect(DB_CONFIG.host, { dbName: DB_CONFIG.database }).then(() => {
             console.log('Connection to the Atlas Cluster is successful!');
         })
