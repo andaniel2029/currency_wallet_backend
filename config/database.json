@@ -1,5 +1,5 @@
 {
     "port": 27017,
-    "host": "mongodb+srv://mark01:mark01@cluster0-dh1hj.mongodb.net/",
+    "host": "mongodb+srv://mark01:mark01@currencywalletcluster-xnd6n.mongodb.net/",
     "database": "currency_wallet"
 }
